@@ -1,0 +1,60 @@
+{
+    "hours": {
+      "09:00" : true,
+      "09:30" : true,
+      "10:00" : true,
+      "10:30" : true,
+      "11:00" : true,
+      "11:30" : true,
+      "12:00" : true,
+      "12:30" : true,
+      "13:00" : true,
+      "13:30" : true,
+      "14:00" : true,
+      "14:30" : true,
+      "15:00" : true,
+      "15:30" : true,
+      "16:00" : true,
+      "16:30" : true,
+      "17:00" : true,
+      "17:30" : true,
+      "18:00" : true,
+      "18:30" : true,
+      "19:00" : true,
+      "19:30" : true
+    },
+    "professionals": {
+      "1" : { "name": "Joana",   "specialties": [1,2]     },
+      "2" : { "name": "Renata",  "specialties": [2,5]     },
+      "3" : { "name": "Paulo",   "specialties": [1,2,3,4] },
+      "4" : { "name": "Marcela", "specialties": [4]       }
+    },
+    "specialties" : {
+      "1" : {
+        "name"  : "Mão",
+        "small" : "Mão",
+        "color" : "green"
+      },
+      "2" : {
+        "name"  : "Corte",
+        "small" : "Corte",
+        "color" : "red"
+      },
+      "3" : {
+        "name"  : "Pé",
+        "small" : "Pé",
+        "color" : "blue"
+      },
+      "4" : {
+        "name"  : "Depilação Axila",
+        "small" : "Dep Axila",
+        "color" : "pink"
+      },
+      "5" : {
+        "name"  : "Escova",
+        "small" : "Escova",
+        "color" : "yellow"
+      }
+    }
+
+  }

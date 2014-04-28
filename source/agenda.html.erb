@@ -1,0 +1,42 @@
+---
+title: Hora do salao
+---
+
+<%= partial "partials/group-header" %>
+
+<div class="row">
+  <div id="messages" class="col-md-12">
+  </div>
+</div>
+
+<div class="row">
+  <div id="loading" class="col-md-12">
+    <img src="assets/images/ajax-loaders/17.gif" class="show center-block">
+  </div>
+  <div id="boxTable" class="box">
+    <div class="box-header col-md-11 col-md-offset-1">
+      <div class="title">
+        Data
+      </div>
+    </div>
+    <div class="col-md-1 text-right">
+      <button class="btn btn-primary icon-circle-arrow-left" type="button"></button>
+    </div>
+    <div class="col-md-10">
+      <div class="box-content">
+        <div class='responsive-table'>
+          <div class='scrollable-area' id="agenda-area">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1 text-left">
+      <button class="btn btn-primary icon-circle-arrow-right" type="button"></button>
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="row">
+<div class="btn has-popover" data-content="Vel excepturi ut voluptates eaque eaque non ducimus illo rerum" data-placement="top" data-title="Top" data-original-title="" title="">Top</div>
+</div> -->
