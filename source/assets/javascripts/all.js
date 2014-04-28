@@ -1,0 +1,10 @@
+//= require jquery/jquery.min
+//= require jquery/jquery.mobile.custom.min
+//= require jquery/jquery-migrate.min
+//= require jquery/jquery-ui.min
+//= require plugins/jquery_ui_touch_punch/jquery.ui.touch-punch.min
+//= require bootstrap/bootstrap
+//= require plugins/modernizr/modernizr.min
+//= require plugins/retina/retina
+//= require theme
+//= require agenda
