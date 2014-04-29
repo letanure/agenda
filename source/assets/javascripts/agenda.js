@@ -228,6 +228,7 @@ var agenda = (function() {
     message('save', 'success');
   }
 
+  // envio o que para block? dia/hora?
   function blockHour() {
     $('.block-hour').live('click', function () {
       $.ajax({
@@ -247,7 +248,7 @@ var agenda = (function() {
     });
   }
 
-  var hasResults = false;
+  // o termo de busca vai ser sempre exato? select?
   function searchClient () {
     $('#search-client').on('submit', function (evt) {
       evt.preventDefault();
@@ -292,6 +293,7 @@ var agenda = (function() {
     });
   }
 
+  // ID vem de onde? o termo de busca vai ser sempre exato? select?
   function payServices () {
     $('#services-pay').on('click', function () {
        $.getJSON( config.api.pay, function( data ) {
