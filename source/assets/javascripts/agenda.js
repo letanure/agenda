@@ -148,7 +148,6 @@ var agenda = (function() {
                 '<label for="inputEmail3" class="col-sm-4 control-label">Serviço</label>'+
                 '<div class="col-sm-8">'+
                   '<select class="form-control appointment-specialtie" name="specialtie">'+
-                    '<option>Selecione</option>'+
                     (function (argument) {
                       var htmlSpecialties = '';
                       $.each(salonData.professionals[id].specialties, function (i, idSpecialties ) {
