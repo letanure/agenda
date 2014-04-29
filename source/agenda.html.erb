@@ -35,3 +35,50 @@ title: Hora do salao
     </div>
   </div>
 </div>
+
+<hr class="hr-normal">
+
+<div class="row">
+  <form class="form form-horizontal" id="search-client" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8">
+    <div class="form-group">
+      <label class="control-label col-md-2" for="appendedInputButtons">Cliente</label>
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="input-group">
+              <input class="form-control" id="search-cliente-name" type="text">
+              <div class="input-group-btn">
+                <button class="btn btn-primary" type="submit">Buscar</button>
+                <button class="btn" type="button" id="reset-search">Limpar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div id="list-services-table" class="responsive-table col-sm-10 col-md-offset-1">
+    <div class="scrollable-area">
+      <table class="table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th>Serviço</th>
+            <th>Profissional</th>
+            <th class="text-right">Valor</th>
+          </tr>
+        </thead>
+        <tbody id="list-services">
+
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Total</th>
+            <th></th>
+            <th id="services-total" class="text-right"></th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
