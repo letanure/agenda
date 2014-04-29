@@ -4,11 +4,13 @@ var agenda = (function() {
   var config = {
     api: {
       salon: 'api/salon.json',
-      day: 'api/dia.json'
+      day: 'api/dia.json',
+      save: 'api/save.json'
     }
   };
 
   var salonData = {};
+  var $openTooltip;
 
   var messages= {
     config: {
@@ -16,12 +18,16 @@ var agenda = (function() {
     },
     day: {
       danger: "Erro ao carregar os agendamentos do dia."
+    },
+    save: {
+      danger: "Erro salvar o agendamento."
     }
   }
 
   function init() {
     console.log('agenda init');
     loadConfig();
+    saveAppointment();
   }
 
   function message (section, type) {
@@ -107,16 +113,18 @@ var agenda = (function() {
       var name = $(this).find('.appointment-name').data('name');
       var phone = $(this).find('.appointment-phone').data('phone');
       var specialtie = $(this).find('.appointment-specialtie').data('specialtie');
+      var hour = $(this).data('hour');
       client.name = name || '';
       client.phone = phone || '';
       client.specialtie = specialtie || '';
       var id = $(this).data('professional');
       var htmlPopover = '<div class="col-md-12">'+
             '<form class="form-horizontal" role="form">'+
+              '<input type="hidden" name="hour" value="' + hour + '">'+
               '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Serviço</label>'+
                 '<div class="col-sm-8">'+
-                  '<select class="form-control">'+
+                  '<select class="form-control appointment-specialtie" name="specialtie">'+
                     '<option>Selecione</option>'+
                     (function (argument) {
                       var htmlSpecialties = '';
@@ -131,32 +139,66 @@ var agenda = (function() {
               '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Nome</label>'+
                 '<div class="col-sm-8">'+
-                  '<input type="nome" class="form-control" placeholder="Nome" value="' + client.name + '">'+
+                  '<input type="text" name="name" class="form-control appointment-name" placeholder="Nome" value="' + client.name + '">'+
                 '</div>'+
               '</div>'+
               '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Telefone</label>'+
                 '<div class="col-sm-8">'+
-                  '<input type="text" class="form-control" placeholder="Telefone"  value="' + client.phone + '">'+
+                  '<input type="text" name="phone" class="form-control appointment-phone" placeholder="Telefone"  value="' + client.phone + '">'+
                 '</div>'+
               '</div>'+
               '<div class="form-group">'+
-                '<button class="btn btn-primary" style="margin-bottom:5px" type="button">Agendar</button>' +
+                '<button class="btn btn-primary save-appointment" style="margin-bottom:5px" type="button">Agendar</button>' +
                 '<button class="btn btn-inverse" style="margin-bottom:5px" type="button">Bloquear horário</button>' +
               '</div>'+
             '</form>'+
           '</div>';
-      $(this).popover({
+      $openTooltip = $(this);
+      $openTooltip.popover({
           title: salonData.professionals[id].name,
           html: true,
           placement: 'top',
+          container: 'body',
           content: htmlPopover
+      }).on('hidden.bs.popover', function () {
+        // $('td').popover('destroy');
       })
-      $(this).tooltip('show');
-    })
+      $openTooltip.popover('show');
+    });
+
   }
 
+  function saveAppointment() {
+    $('.save-appointment').live('click', function () {
+      var $form = $(this).parents('form');
+      $.ajax({
+        type: "POST",
+        url: config.api.save,
+        data: $form.serialize(),
+        success: function () {
+          updateAppointment($form);
+        },
+        error: function () {
+          message('save', 'danger');
+        }
+      });
+    });
+  }
 
+  function updateAppointment($form) {
+    var name = $form.find('.appointment-name').val();
+    var phone = $form.find('.appointment-phone').val();
+    var specialtie = $form.find('.appointment-specialtie').val();
+    $openTooltip.html(
+          '<span class="appointment-name" data-name="' + name + '">' + name.split(' ')[0]  + '</span>' +
+          '<span class="appointment-specialtie" data-specialtie="' + specialtie + '">' + salonData.specialties[specialtie].small + '</span>' +
+          '<span class="appointment-phone" data-phone="' + phone + '">' + phone  + '</span>'
+        )
+        .css('background', salonData.specialties[specialtie].color );
+    // $openTooltip.popover('close');
+    // console.log($openTooltip)
+  }
 
   return {
     init:init
