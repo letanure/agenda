@@ -7,7 +7,8 @@ var agenda = (function() {
       day: 'api/dia.json',
       save: 'api/save.json',
       block: 'api/block.json',
-      search: 'api/servicos.json'
+      search: 'api/servicos.json',
+      pay: 'api/pay.json',
     }
   };
 
@@ -31,7 +32,12 @@ var agenda = (function() {
     },
     search: {
       danger: "Erro ao buscar os serviços."
+    },
+    pay: {
+      danger: "Erro ao registrar pagamento.",
+      success: "Pagamento registrado com sucesso"
     }
+
   }
 
   function init() {
@@ -41,6 +47,7 @@ var agenda = (function() {
     blockHour();
     searchClient();
     resetSearch();
+    payServices();
   }
 
   function message (section, type) {
@@ -249,7 +256,7 @@ var agenda = (function() {
       $.ajax({
         type: "POST",
         url: config.api.search,
-        data: 'aa',
+        data: {query: clienName },
         success: function (data) {
             listServices(data);
         },
@@ -272,7 +279,7 @@ var agenda = (function() {
         '</tr>';
     });
     $('#list-services').html(htmlServices);
-    $('#services-total').html('R$ ' + accounting.formatMoney(servicesTotal, "R$ ", 2, ".", ","));
+    $('#services-total').html(accounting.formatMoney(servicesTotal, "R$ ", 2, ".", ","));
     $('#list-services-table').slideDown();
   }
 
@@ -283,6 +290,16 @@ var agenda = (function() {
         $('#list-services').html('');
       });
     });
+  }
+
+  function payServices () {
+    $('#services-pay').on('click', function () {
+       $.getJSON( config.api.pay, function( data ) {
+          message('pay', 'success');
+        }).fail(function() {
+          message('pay', 'danger');
+        });
+    })
   }
 
   return {
