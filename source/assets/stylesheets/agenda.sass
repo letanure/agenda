@@ -1,9 +1,28 @@
 #boxTable
   display: none
 
-  .table tbody > tr > td
-    border-right: 1px solid #ddd
-    cursor: pointer
+  .table
+    thead
+      th
+        text-align: center
+    tbody
+      tr
+        th
+        td
+          border-right: 1px solid #ddd
+          cursor: pointer
+          font-size: 11px
+
+  .appointment-name
+    font-size: 11px
+    display: block
+  .appointment-specialtie
+    font-size: 10px
+    display: block
+  .appointment-phone
+    display: none
+
+
 
   .responsive-table
     overflow: visible
