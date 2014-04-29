@@ -5,12 +5,13 @@ var agenda = (function() {
     api: {
       salon: 'api/salon.json',
       day: 'api/dia.json',
-      save: 'api/save.json'
+      save: 'api/save.json',
+      block: 'api/block.json'
     }
   };
 
   var salonData = {};
-  var $openTooltip;
+  var openTooltipId;
 
   var messages= {
     config: {
@@ -20,7 +21,12 @@ var agenda = (function() {
       danger: "Erro ao carregar os agendamentos do dia."
     },
     save: {
-      danger: "Erro salvar o agendamento."
+      danger: "Erro ao salvar o agendamento.",
+      success: "Agendamento salvo com sucesso"
+    },
+    block: {
+      danger: "Erro ao bloquear o horário.",
+      success: "Horário bloqueado com sucesso"
     }
   }
 
@@ -28,16 +34,20 @@ var agenda = (function() {
     console.log('agenda init');
     loadConfig();
     saveAppointment();
+    blockHour();
   }
 
   function message (section, type) {
     var html = [
-    '<div class="alert alert-' + type + ' alert-dismissable">',
+    '<div class="alert alert-' + type + ' alert-dismissable alert-hidden">',
     '<a class="close" data-dismiss="alert" href="#">&times;</a>',
       messages[section][type],
     '</div>'
     ].join('')
     $('#messages').append(html);
+    $('#messages .alert-hidden').slideDown().delay(2000).slideUp('fast', function () {
+      $(this).remove()
+    });
   }
 
   // Carrega as conficuraçoes do salao para montar a tabela
@@ -103,12 +113,14 @@ var agenda = (function() {
           '<span class="appointment-specialtie" data-specialtie="' + appointment.specialtie + '">' + salonData.specialties[appointment.specialtie].small + '</span>' +
           '<span class="appointment-phone" data-phone="' + appointment.client.phone + '">' + appointment.client.phone  + '</span>'
         )
+        .removeClass('hour-block')
         .css('background', salonData.specialties[appointment.specialtie].color )
     });
   }
 
   function horario () {
-    $('td').one('click', function () {
+    $('td').on('click', function () {
+      console.log('a')
       var client = {};
       var name = $(this).find('.appointment-name').data('name');
       var phone = $(this).find('.appointment-phone').data('phone');
@@ -150,21 +162,23 @@ var agenda = (function() {
               '</div>'+
               '<div class="form-group">'+
                 '<button class="btn btn-primary save-appointment" style="margin-bottom:5px" type="button">Agendar</button>' +
-                '<button class="btn btn-inverse" style="margin-bottom:5px" type="button">Bloquear horário</button>' +
+                '<button class="btn btn-inverse block-hour" style="margin-bottom:5px" type="button">Bloquear horário</button>' +
               '</div>'+
             '</form>'+
           '</div>';
-      $openTooltip = $(this);
-      $openTooltip.popover({
+      if( $(openTooltipId)[0] ){
+        $(openTooltipId).popover('hide');
+      }
+      $(this).uniqueId();
+      openTooltipId = '#'+$(this).attr('id');
+      $(openTooltipId).popover({
           title: salonData.professionals[id].name,
           html: true,
           placement: 'top',
           container: 'body',
           content: htmlPopover
-      }).on('hidden.bs.popover', function () {
-        // $('td').popover('destroy');
-      })
-      $openTooltip.popover('show');
+      });
+      $(openTooltipId).popover('toggle');
     });
 
   }
@@ -190,14 +204,35 @@ var agenda = (function() {
     var name = $form.find('.appointment-name').val();
     var phone = $form.find('.appointment-phone').val();
     var specialtie = $form.find('.appointment-specialtie').val();
-    $openTooltip.html(
+    $(openTooltipId).html(
           '<span class="appointment-name" data-name="' + name + '">' + name.split(' ')[0]  + '</span>' +
           '<span class="appointment-specialtie" data-specialtie="' + specialtie + '">' + salonData.specialties[specialtie].small + '</span>' +
           '<span class="appointment-phone" data-phone="' + phone + '">' + phone  + '</span>'
         )
+        .removeClass('hour-block')
         .css('background', salonData.specialties[specialtie].color );
-    // $openTooltip.popover('close');
-    // console.log($openTooltip)
+    $(openTooltipId).popover('destroy');
+    message('save', 'success');
+  }
+
+  function blockHour() {
+    $('.block-hour').live('click', function () {
+      // var $form = $(this).parents('form');
+      $.ajax({
+        type: "POST",
+        url: config.api.block,
+        data: 'aa',
+        success: function () {
+          // updateAppointment($form);
+          $(openTooltipId).empty().addClass('hour-block');
+          $(openTooltipId).popover('destroy');
+          message('block', 'success');
+        },
+        error: function () {
+          message('block', 'danger');
+        }
+      });
+    });
   }
 
   return {
