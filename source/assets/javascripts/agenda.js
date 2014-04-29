@@ -3,7 +3,8 @@ var agenda = (function() {
 
   var config = {
     api: {
-      salon: 'api/salon.json'
+      salon: 'api/salon.json',
+      day: 'api/dia.json'
     }
   };
 
@@ -12,13 +13,15 @@ var agenda = (function() {
   var messages= {
     config: {
       danger: "Erro ao carregar os dados do salão."
+    },
+    day: {
+      danger: "Erro ao carregar os agendamentos do dia."
     }
   }
 
   function init() {
     console.log('agenda init');
     loadConfig();
-
   }
 
   function message (section, type) {
@@ -43,7 +46,6 @@ var agenda = (function() {
 
   function insertTable (data) {
     $('#loading').fadeOut();
-
     var html = [
       '<table class="table" style="margin-bottom:0;"">',
         '<thead>',
@@ -61,7 +63,7 @@ var agenda = (function() {
           (function () {
             var linesTable = '';
             $.each(data.professionals, function (id, professional) {
-              linesTable += '<tr>';
+              linesTable += '<tr id="professional-' + id + '">';
               linesTable += '<th>' + professional.name + '</th>';
               $.each(data.hours, function (hour, enabled) {
                 linesTable += '<td data-professional="' + id + '" data-hour="' + hour + '"></td>';
@@ -73,14 +75,41 @@ var agenda = (function() {
         '</tbody>',
       '</table>'
     ].join('');
-    // console.log(html)
     $('#agenda-area').html(html);
     $('#boxTable').fadeIn();
     horario()
+    day();
+  }
+
+  function day () {
+    $.getJSON( config.api.day, function( data ) {
+      insertAppointments(data)
+    }).fail(function() {
+      message('day', 'danger');
+    });
+  }
+
+  function insertAppointments (appointments) {
+    $.each(appointments, function(index, appointment) {
+      $('tr#professional-' + appointment.professional + ' td[data-hour="' + appointment.hour + '"]')
+        .append(
+          '<span class="appointment-name" data-name="' + appointment.client.name + '">' + appointment.client.name.split(' ')[0]  + '</span>' +
+          '<span class="appointment-specialtie" data-specialtie="' + appointment.specialtie + '">' + salonData.specialties[appointment.specialtie].small + '</span>' +
+          '<span class="appointment-phone" data-phone="' + appointment.client.phone + '">' + appointment.client.phone  + '</span>'
+        )
+        .css('background', salonData.specialties[appointment.specialtie].color )
+    });
   }
 
   function horario () {
     $('td').one('click', function () {
+      var client = {};
+      var name = $(this).find('.appointment-name').data('name');
+      var phone = $(this).find('.appointment-phone').data('phone');
+      var specialtie = $(this).find('.appointment-specialtie').data('specialtie');
+      client.name = name || '';
+      client.phone = phone || '';
+      client.specialtie = specialtie || '';
       var id = $(this).data('professional');
       var htmlPopover = '<div class="col-md-12">'+
             '<form class="form-horizontal" role="form">'+
@@ -92,7 +121,7 @@ var agenda = (function() {
                     (function (argument) {
                       var htmlSpecialties = '';
                       $.each(salonData.professionals[id].specialties, function (i, idSpecialties ) {
-                          htmlSpecialties += '<option value="' + idSpecialties +  '">'  + salonData.specialties[idSpecialties].name + '</option>'
+                          htmlSpecialties += '<option value="' + idSpecialties +  '" ' + (client.specialtie == idSpecialties ? 'selected' : '') + '>'  + salonData.specialties[idSpecialties].name + '</option>'
                       });
                       return htmlSpecialties;
                     })() +
@@ -102,13 +131,13 @@ var agenda = (function() {
               '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Nome</label>'+
                 '<div class="col-sm-8">'+
-                  '<input type="nome" class="form-control" placeholder="Nome">'+
+                  '<input type="nome" class="form-control" placeholder="Nome" value="' + client.name + '">'+
                 '</div>'+
               '</div>'+
               '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Telefone</label>'+
                 '<div class="col-sm-8">'+
-                  '<input type="text" class="form-control" placeholder="Telefone">'+
+                  '<input type="text" class="form-control" placeholder="Telefone"  value="' + client.phone + '">'+
                 '</div>'+
               '</div>'+
               '<div class="form-group">'+
