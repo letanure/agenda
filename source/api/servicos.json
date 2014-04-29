@@ -1,0 +1,17 @@
+{
+    "1" : {
+      "professional" : 3,
+      "specialtie" : 4,
+      "price": 14
+    },
+    "2" : {
+      "professional" : 2,
+      "specialtie" : 5,
+      "price": 56.12
+    },
+    "3" : {
+      "professional" : 4,
+      "specialtie" : 4,
+      "price": 45.67
+    }
+  }
