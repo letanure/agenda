@@ -6,5 +6,6 @@
 //= require bootstrap/bootstrap
 //= require plugins/modernizr/modernizr.min
 //= require plugins/retina/retina
+//= require plugins/accounting/accounting.min
 //= require theme
 //= require agenda
