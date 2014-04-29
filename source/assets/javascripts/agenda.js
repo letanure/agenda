@@ -41,7 +41,6 @@ var agenda = (function() {
   }
 
   function init() {
-    console.log('agenda init');
     loadConfig();
     saveAppointment();
     blockHour();
@@ -133,7 +132,6 @@ var agenda = (function() {
 
   function horario () {
     $('td').on('click', function () {
-      console.log('a')
       var client = {};
       var name = $(this).find('.appointment-name').data('name');
       var phone = $(this).find('.appointment-phone').data('phone');
@@ -179,21 +177,22 @@ var agenda = (function() {
               '</div>'+
             '</form>'+
           '</div>';
-      if( $(openTooltipId)[0] ){
-        $(openTooltipId).popover('hide');
-      }
-      $(this).uniqueId();
-      openTooltipId = '#'+$(this).attr('id');
-      $(openTooltipId).popover({
-          title: salonData.professionals[id].name,
-          html: true,
-          placement: 'top',
-          container: 'body',
-          content: htmlPopover
-      });
-      $(openTooltipId).popover('toggle');
-    });
 
+      var hasPopover = $(this).data('popover');
+      if( !hasPopover ){
+        $(this).data('popover', true)
+        $(this).uniqueId();
+        openTooltipId = '#'+$(this).attr('id');
+        $(openTooltipId).popover({
+            title: salonData.professionals[id].name,
+            html: true,
+            placement: 'top',
+            container: 'body',
+            content: htmlPopover
+        });
+        $(openTooltipId).popover('show');
+      }
+    });
   }
 
   function saveAppointment() {
@@ -225,6 +224,7 @@ var agenda = (function() {
         .removeClass('hour-block')
         .css('background', salonData.specialties[specialtie].color );
     $(openTooltipId).popover('destroy');
+    $(openTooltipId).data('popover', false)
     message('save', 'success');
   }
 
@@ -239,6 +239,7 @@ var agenda = (function() {
           // updateAppointment($form);
           $(openTooltipId).empty().addClass('hour-block');
           $(openTooltipId).popover('destroy');
+          $(openTooltipId).data('popover', false)
           message('block', 'success');
         },
         error: function () {
