@@ -6,7 +6,8 @@ var agenda = (function() {
       salon: 'api/salon.json',
       day: 'api/dia.json',
       save: 'api/save.json',
-      block: 'api/block.json'
+      block: 'api/block.json',
+      search: 'api/servicos.json'
     }
   };
 
@@ -27,6 +28,9 @@ var agenda = (function() {
     block: {
       danger: "Erro ao bloquear o horário.",
       success: "Horário bloqueado com sucesso"
+    },
+    search: {
+      danger: "Erro ao buscar os serviços."
     }
   }
 
@@ -35,6 +39,8 @@ var agenda = (function() {
     loadConfig();
     saveAppointment();
     blockHour();
+    searchClient();
+    resetSearch();
   }
 
   function message (section, type) {
@@ -217,7 +223,6 @@ var agenda = (function() {
 
   function blockHour() {
     $('.block-hour').live('click', function () {
-      // var $form = $(this).parents('form');
       $.ajax({
         type: "POST",
         url: config.api.block,
@@ -231,6 +236,51 @@ var agenda = (function() {
         error: function () {
           message('block', 'danger');
         }
+      });
+    });
+  }
+
+  var hasResults = false;
+  function searchClient () {
+    $('#search-client').on('submit', function (evt) {
+      evt.preventDefault();
+      $('#list-services-table').slideUp();
+      var clienName = $('#search-cliente-name').val();
+      $.ajax({
+        type: "POST",
+        url: config.api.search,
+        data: 'aa',
+        success: function (data) {
+            listServices(data);
+        },
+        error: function () {
+          message('search', 'danger');
+        }
+      });
+    });
+  }
+
+  function listServices (services) {
+    var htmlServices = '';
+    var servicesTotal = 0;
+    $.each(services, function(index, service) {
+      servicesTotal += service.price;
+       htmlServices += '<tr>'+
+          '<td>' + salonData.specialties[service.specialtie].name + '</td>'+
+          '<td>' + salonData.professionals[service.professional].name + '</td>'+
+          '<td class="text-right">' + accounting.formatMoney(service.price, "R$ ", 2, ".", ",") + '</td>'+
+        '</tr>';
+    });
+    $('#list-services').html(htmlServices);
+    $('#services-total').html('R$ ' + accounting.formatMoney(servicesTotal, "R$ ", 2, ".", ","));
+    $('#list-services-table').slideDown();
+  }
+
+  function resetSearch () {
+    $('#reset-search').on('click',function(event) {
+      event.preventDefault();
+      $('#list-services-table').slideUp('fast', function () {
+        $('#list-services').html('');
       });
     });
   }
