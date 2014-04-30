@@ -140,9 +140,10 @@ var agenda = (function() {
       client.name = name || '';
       client.phone = phone || '';
       client.specialtie = specialtie || '';
+      var hasAppointment = (name == null ? false : true);
       var id = $(this).data('professional');
       var htmlPopover = '<div class="col-md-12">'+
-            '<form class="form-horizontal" role="form">'+
+            '<form class="form-horizontal ' + (hasAppointment ? 'hasAppointment' : 'hasNoAppointment') +'" role="form">'+
               '<input type="hidden" name="hour" value="' + hour + '">'+
               '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Serviço</label>'+
@@ -171,6 +172,7 @@ var agenda = (function() {
                 '</div>'+
               '</div>'+
               '<div class="form-group">'+
+                '<button class="btn btn-primary dismiss-appointment" style="margin-bottom:5px" type="button">Desmarcar</button>' +
                 '<button class="btn btn-primary save-appointment" style="margin-bottom:5px" type="button">Agendar</button>' +
                 '<button class="btn btn-inverse block-hour" style="margin-bottom:5px" type="button">Bloquear horário</button>' +
               '</div>'+
