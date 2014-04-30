@@ -280,6 +280,7 @@ var agenda = (function() {
           '<td>' + salonData.specialties[service.specialtie].name + '</td>'+
           '<td>' + salonData.professionals[service.professional].name + '</td>'+
           '<td class="text-right">' + accounting.formatMoney(service.price, "R$ ", 2, ".", ",") + '</td>'+
+          '<td class="text-right"><button id="services-pay" type="button" class="btn btn-primary btn-xs services-pay">Pagar</button></td>'+
         '</tr>';
     });
     $('#list-services').html(htmlServices);
@@ -298,9 +299,11 @@ var agenda = (function() {
 
   // ID vem de onde? o termo de busca vai ser sempre exato? select?
   function payServices () {
-    $('#services-pay').on('click', function () {
+    $('#services-pay, .services-pay').live('click', function () {
+      var $btn = $(this);
        $.getJSON( config.api.pay, function( data ) {
           message('pay', 'success');
+          $btn.text('pago').addClass('btn-info')
         }).fail(function() {
           message('pay', 'danger');
         });
