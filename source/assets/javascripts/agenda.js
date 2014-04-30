@@ -183,7 +183,7 @@ var agenda = (function() {
         $(this).uniqueId();
         openTooltipId = '#'+$(this).attr('id');
         $(openTooltipId).popover({
-            title: salonData.professionals[id].name,
+            title: salonData.professionals[id].name + '<span class="close close-popover">&times;</span>',
             html: true,
             placement: 'top',
             container: 'body',
@@ -191,6 +191,9 @@ var agenda = (function() {
         });
         $(openTooltipId).popover('show');
       }
+    });
+    $('html').on('click', '.close-popover', function (e) {
+        $(openTooltipId).popover('hide');
     });
   }
 
