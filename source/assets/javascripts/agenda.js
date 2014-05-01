@@ -238,17 +238,29 @@ var agenda = (function() {
     var name = $form.find('.appointment-name').val();
     var phone = $form.find('.appointment-phone').val();
     var specialtie = $form.find('.appointment-specialtie').val();
+    var duration = parseInt($form.find('.appointment-duration').val(), 10);
     if(isDismiss){
       $(openTooltipId).html('')
           .css('background', '#fff');
     }else{
-      $(openTooltipId).html(
+      var $td = $(openTooltipId);
+      $td.html(
             '<span class="appointment-name" data-name="' + name + '">' + name.split(' ')[0]  + '</span>' +
             '<span class="appointment-specialtie" data-specialtie="' + specialtie + '">' + salonData.specialties[specialtie].small + '</span>' +
             '<span class="appointment-phone" data-phone="' + phone + '">' + phone  + '</span>'
           )
           .removeClass('hour-block')
           .css('background', salonData.specialties[specialtie].color );
+      for (var i = 1; i < duration; i++) {
+        $td = $(openTooltipId).next('td');
+        $td.html(
+              '<span class="appointment-name" data-name="' + name + '">' + name.split(' ')[0]  + '</span>' +
+              '<span class="appointment-specialtie" data-specialtie="' + specialtie + '">' + salonData.specialties[specialtie].small + '</span>' +
+              '<span class="appointment-phone" data-phone="' + phone + '">' + phone  + '</span>'
+            )
+            .removeClass('hour-block')
+            .css('background', salonData.specialties[specialtie].color );
+      };
     }
     $(openTooltipId).popover('destroy');
     $(openTooltipId).data('popover', false)
