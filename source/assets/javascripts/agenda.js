@@ -7,6 +7,7 @@ var agenda = (function() {
       day: 'api/dia.json',
       save: 'api/save.json',
       block: 'api/block.json',
+      unblock: 'api/unblock.json',
       search: 'api/servicos.json',
       pay: 'api/pay.json',
     }
@@ -30,6 +31,10 @@ var agenda = (function() {
       danger: "Erro ao bloquear o horário.",
       success: "Horário bloqueado com sucesso"
     },
+    unblock: {
+      danger: "Erro ao desbloquear o horário.",
+      success: "Horário desbloqueado com sucesso"
+    },
     search: {
       danger: "Erro ao buscar os serviços."
     },
@@ -44,6 +49,7 @@ var agenda = (function() {
     loadConfig();
     saveAppointment();
     blockHour();
+    unBlockHour();
     searchClient();
     resetSearch();
     payServices();
@@ -142,8 +148,9 @@ var agenda = (function() {
       client.specialtie = specialtie || '';
       var hasAppointment = (name == null ? false : true);
       var id = $(this).data('professional');
+      var isblocked = ( $(this).hasClass('hour-block') ? 'blockedHour' : 'unblockedHour' );
       var htmlPopover = '<div class="col-md-12">'+
-            '<form class="form-horizontal ' + (hasAppointment ? 'hasAppointment' : 'hasNoAppointment') +'" role="form">'+
+            '<form class="form-horizontal ' + ' ' + isblocked + ' ' + (hasAppointment ? 'hasAppointment' : 'hasNoAppointment') +'" role="form">'+
               '<input type="hidden" name="hour" value="' + hour + '">'+
               '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Serviço</label>'+
@@ -175,6 +182,7 @@ var agenda = (function() {
                 '<button class="btn btn-primary dismiss-appointment" style="margin-bottom:5px" type="button">Desmarcar</button>' +
                 '<button class="btn btn-primary save-appointment" style="margin-bottom:5px" type="button">Agendar</button>' +
                 '<button class="btn btn-inverse block-hour" style="margin-bottom:5px" type="button">Bloquear horário</button>' +
+                '<button class="btn btn-inverse unblock-hour" style="margin-bottom:5px" type="button">Desbloquear horário</button>' +
               '</div>'+
             '</form>'+
           '</div>';
@@ -248,6 +256,25 @@ var agenda = (function() {
         },
         error: function () {
           message('block', 'danger');
+        }
+      });
+    });
+  }
+
+  function unBlockHour() {
+    $('.unblock-hour').live('click', function () {
+      $.ajax({
+        type: "POST",
+        url: config.api.unblock,
+        data: 'aa',
+        success: function () {
+          $(openTooltipId).empty().removeClass('hour-block');
+          $(openTooltipId).popover('destroy');
+          $(openTooltipId).data('popover', false)
+          message('unblock', 'success');
+        },
+        error: function () {
+          message('unblock', 'danger');
         }
       });
     });
