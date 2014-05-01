@@ -179,8 +179,8 @@ var agenda = (function() {
                 '</div>'+
               '</div>'+
               '<div class="form-group">'+
-                '<button class="btn btn-primary dismiss-appointment" style="margin-bottom:5px" type="button">Desmarcar</button>' +
-                '<button class="btn btn-primary save-appointment" style="margin-bottom:5px" type="button">Agendar</button>' +
+                '<input class="btn btn-primary dismiss-appointment" style="margin-bottom:5px" type="button" value="Desmarcar">' +
+                '<input class="btn btn-primary save-appointment" style="margin-bottom:5px" type="button" value="Agendar">' +
                 '<button class="btn btn-inverse block-hour" style="margin-bottom:5px" type="button">Bloquear horário</button>' +
                 '<button class="btn btn-inverse unblock-hour" style="margin-bottom:5px" type="button">Desbloquear horário</button>' +
               '</div>'+
@@ -208,14 +208,15 @@ var agenda = (function() {
   }
 
   function saveAppointment() {
-    $('.save-appointment').live('click', function () {
+    $('.save-appointment, .dismiss-appointment').live('click', function () {
+      var isDismiss = $(this).hasClass('dismiss-appointment');
       var $form = $(this).parents('form');
       $.ajax({
         type: "POST",
         url: config.api.save,
         data: $form.serialize(),
         success: function () {
-          updateAppointment($form);
+          updateAppointment($form, isDismiss);
         },
         error: function () {
           message('save', 'danger');
@@ -224,17 +225,22 @@ var agenda = (function() {
     });
   }
 
-  function updateAppointment($form) {
+  function updateAppointment($form, isDismiss) {
     var name = $form.find('.appointment-name').val();
     var phone = $form.find('.appointment-phone').val();
     var specialtie = $form.find('.appointment-specialtie').val();
-    $(openTooltipId).html(
-          '<span class="appointment-name" data-name="' + name + '">' + name.split(' ')[0]  + '</span>' +
-          '<span class="appointment-specialtie" data-specialtie="' + specialtie + '">' + salonData.specialties[specialtie].small + '</span>' +
-          '<span class="appointment-phone" data-phone="' + phone + '">' + phone  + '</span>'
-        )
-        .removeClass('hour-block')
-        .css('background', salonData.specialties[specialtie].color );
+    if(isDismiss){
+      $(openTooltipId).html('')
+          .css('background', '#fff');
+    }else{
+      $(openTooltipId).html(
+            '<span class="appointment-name" data-name="' + name + '">' + name.split(' ')[0]  + '</span>' +
+            '<span class="appointment-specialtie" data-specialtie="' + specialtie + '">' + salonData.specialties[specialtie].small + '</span>' +
+            '<span class="appointment-phone" data-phone="' + phone + '">' + phone  + '</span>'
+          )
+          .removeClass('hour-block')
+          .css('background', salonData.specialties[specialtie].color );
+    }
     $(openTooltipId).popover('destroy');
     $(openTooltipId).data('popover', false)
     message('save', 'success');
