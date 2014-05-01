@@ -167,6 +167,15 @@ var agenda = (function() {
                 '</div>'+
               '</div>'+
               '<div class="form-group">'+
+                '<label class="col-sm-4 control-label">Duração</label>'+
+                '<div class="col-sm-8">'+
+                  '<select class="form-control appointment-duration" name="duration">'+
+                  '<option value="1">30 minutos</opntion>'+
+                  '<option value="2">1 hora</opntion>'+
+                  '</select>'+
+                '</div>'+
+              '</div>'+
+              '<div class="form-group">'+
                 '<label for="inputEmail3" class="col-sm-4 control-label">Nome</label>'+
                 '<div class="col-sm-8">'+
                   '<input type="text" name="name" class="form-control appointment-name" placeholder="Nome" value="' + client.name + '">'+
